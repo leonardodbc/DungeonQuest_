@@ -1,5 +1,3 @@
-# Dungeon Quest
-
 ![Dungeon Quest Logo](dungeonquest-logo.png)
 
 Welcome to Dungeon Quest, a thrilling adventure game developed in Godot 4 using C#. Dive into mysterious dungeons, battle formidable foes, and uncover hidden treasures!
