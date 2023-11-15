@@ -4,18 +4,16 @@ using System;
 public partial class player : CharacterBody3D
 {
 	public const float Speed = 5.0f;
-	public const float JumpVelocity = 4.5f;
+	public const float JumpVelocity = 7.5f;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
-	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+	public float gravity = 2.5f + ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
 	private AnimationTree animations;
-	private Node3D visual;
+
 	public override void _Ready(){
 
 		animations = GetNode<AnimationTree>("AnimationTree");
-
-        visual = GetNode<Node3D>("rig");
 
     }
 	public override void _PhysicsProcess(double delta)
