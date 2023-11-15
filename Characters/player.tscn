@@ -84,20 +84,22 @@ switch_mode = 2
 switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_batt5"]
+xfade_time = 0.1
 advance_mode = 2
 advance_condition = &"jumping"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6xc0w"]
+xfade_time = 0.1
 advance_mode = 2
-advance_condition = &"jumping"
+advance_condition = &"grounded"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fxqi7"]
+xfade_time = 0.1
 switch_mode = 2
 advance_mode = 2
 advance_condition = &"jumping"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_0shyw"]
-xfade_time = 0.1
 switch_mode = 2
 advance_mode = 2
 advance_condition = &"grounded"

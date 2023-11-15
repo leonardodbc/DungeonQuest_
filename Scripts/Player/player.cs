@@ -50,7 +50,7 @@ public partial class player : CharacterBody3D
 
 	private AnimationTree animations;
 	private AnimationNodeStateMachinePlayback stateMachine;
-	private bool jumping = false;
+	private bool jumping = true;
 	private bool last_floor = true;
 	private void handle_animation(Vector3 direction, double delta)
 	{
@@ -78,7 +78,7 @@ public partial class player : CharacterBody3D
 		last_floor = IsOnFloor();
 		if (!IsOnFloor() && !jumping)
 		{
-			stateMachine.Travel("Idle_Jump");
+			stateMachine.Travel("Jump_Idle");
 			animations.Set("parameters/conditions/grounded", false);
 		}
 	}
