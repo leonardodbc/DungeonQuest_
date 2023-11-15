@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cunv0svc7phby"]
+[gd_scene load_steps=8 format=3 uid="uid://cunv0svc7phby"]
 
 [ext_resource type="PackedScene" uid="uid://c8qdaxbsp6hw4" path="res://Characters/player.tscn" id="1_8euem"]
 [ext_resource type="MeshLibrary" uid="uid://dph5vgl7w7rxr" path="res://gridmap_plataform.tres" id="2_fp1pq"]
 [ext_resource type="PackedScene" uid="uid://dq3xmhirja5b4" path="res://coin_area.tscn" id="3_14d6x"]
+[ext_resource type="PackedScene" uid="uid://cjbsgcal7dkci" path="res://spikeArea.tscn" id="4_26ykf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rd6ie"]
 sky_top_color = Color(0.223529, 0.607843, 0.854902, 1)
@@ -55,3 +56,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 76, 3, 10)
 
 [node name="CoinArea5" parent="Coins" instance=ExtResource("3_14d6x")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 160, 13, 0)
+
+[node name="Spikes" type="Node3D" parent="."]
+
+[node name="SpikeArea" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 10, 2, 0)
+
+[node name="SpikeArea2" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 18, 4, 0)
+
+[node name="SpikeArea3" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 45, 0, 0)
+
+[node name="SpikeArea4" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 58, 0, -10)
+
+[node name="SpikeArea5" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 58, 0, 10)
+
+[node name="SpikeArea6" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 80, 2, 0)
+
+[node name="SpikeArea7" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 100, 2, 0)
+
+[node name="SpikeArea8" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 140, 10, 0)
+
+[node name="SpikeArea9" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 140, 10, -1)
+
+[node name="SpikeArea10" parent="Spikes" instance=ExtResource("4_26ykf")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 140, 10, 1)
