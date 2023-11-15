@@ -9,47 +9,78 @@ public partial class player : CharacterBody3D
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
-	private AnimationTree animations;
-	private Node3D visual;
-	public override void _Ready(){
 
+	public override void _Ready()
+	{
 		animations = GetNode<AnimationTree>("AnimationTree");
+		stateMachine = (AnimationNodeStateMachinePlayback)animations.Get("parameters/playback");
+	}
 
-        visual = GetNode<Node3D>("rig");
-
-    }
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector3 velocity = Velocity;
 
-		// Add the gravity.
 		if (!IsOnFloor())
 			velocity.Y -= gravity * (float)delta;
 
-		// Handle Jump.
 		if (Input.IsActionJustPressed("jump") && IsOnFloor())
 			velocity.Y = JumpVelocity;
 
-		// Get the input direction and handle the movement/deceleration.
-		// As good practice, you should replace UI actions with custom gameplay actions.
+
 		Vector2 inputDir = Input.GetVector("left", "right", "forward", "backward");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+
 		if (direction != Vector3.Zero)
 		{
 			velocity.X = direction.X * Speed;
 			velocity.Z = direction.Z * Speed;
-
-			direction = direction.Normalized();
-        	GetNode<Node3D>("Rig").LookAt(Position + direction, Vector3.Up);
+			GetNode<Node3D>("Rig").LookAt(Position + direction, Vector3.Up);
 		}
 		else
 		{
-			
 			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
 			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
 		}
 
+		handle_animation(direction, delta);
 		Velocity = velocity;
 		MoveAndSlide();
 	}
+
+
+	private AnimationTree animations;
+	private AnimationNodeStateMachinePlayback stateMachine;
+	private bool jumping = false;
+	private bool last_floor = true;
+	private void handle_animation(Vector3 direction, double delta)
+	{
+		Vector3 velocity = Velocity;
+		velocity = velocity.Lerp(direction * Speed, (float)delta);
+		var vl = velocity * Transform.Basis;
+		animations.Set("parameters/IWR/blend_position", new Vector2(vl.X, -vl.Z) / Speed);
+		handle_jump_animation();
+	}
+
+	private void handle_jump_animation()
+	{
+		if (IsOnFloor() && Input.IsActionJustPressed("jump"))
+		{
+			jumping = true;
+			animations.Set("parameters/conditions/grounded", false);
+		}
+		animations.Set("parameters/conditions/jumping", jumping);
+
+		if (IsOnFloor() && !last_floor)
+		{
+			jumping = false;
+			animations.Set("parameters/conditions/grounded", true);
+		}
+		last_floor = IsOnFloor();
+		if (!IsOnFloor() && !jumping)
+		{
+			stateMachine.Travel("Idle_Jump");
+			animations.Set("parameters/conditions/grounded", false);
+		}
+	}
+
 }
