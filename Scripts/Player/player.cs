@@ -5,6 +5,7 @@ public partial class player : CharacterBody3D
 {
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 7.5f;
+	private bool can_jump = false;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = 2.5f + ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -23,8 +24,17 @@ public partial class player : CharacterBody3D
 			velocity.Y -= gravity * (float)delta;
 
 		if (Input.IsActionJustPressed("jump") && IsOnFloor())
+		{
 			velocity.Y = JumpVelocity;
+			can_jump = true;
+		}
 
+
+		if (Input.IsActionJustPressed("jump") && can_jump && !IsOnFloor())
+		{
+			can_jump = false;
+			velocity.Y = JumpVelocity;
+		}
 
 		Vector2 inputDir = Input.GetVector("left", "right", "forward", "backward");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();

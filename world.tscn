@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://c8qdaxbsp6hw4" path="res://Characters/player.tscn" id="1_8euem"]
 [ext_resource type="MeshLibrary" uid="uid://dph5vgl7w7rxr" path="res://gridmap_plataform.tres" id="2_fp1pq"]
 [ext_resource type="PackedScene" uid="uid://dq3xmhirja5b4" path="res://coin_area.tscn" id="3_14d6x"]
-[ext_resource type="PackedScene" uid="uid://cjbsgcal7dkci" path="res://spikeArea.tscn" id="4_26ykf"]
+[ext_resource type="PackedScene" path="res://spikeArea.tscn" id="4_26ykf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_rd6ie"]
 sky_top_color = Color(0.223529, 0.607843, 0.854902, 1)
