@@ -4,25 +4,51 @@ using System;
 public partial class player : CharacterBody3D
 {
 	public const float Speed = 5.0f;
+	public const float Acceleration = 4.0f;
 	public const float JumpVelocity = 7.5f;
-	private bool can_jump = false;
-
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = 2.5f + ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
-
 	public override void _Ready()
 	{
+		Model = GetNode<Node3D>("Rig");
 		animations = GetNode<AnimationTree>("AnimationTree");
 		stateMachine = (AnimationNodeStateMachinePlayback)animations.Get("parameters/playback");
+		spring_arm = GetNode<SpringArm3D>("SpringArm3D");
 	}
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector3 velocity = Velocity;
+		velocity.Y += -gravity * (float)delta;
+		velocity = get_move_input(delta);
 
 		if (GlobalPosition.Y < -10)
 			GlobalPosition = new Vector3(0, 0, 0);
+		velocity = handle_jump(velocity, delta);
+		Velocity = velocity;
+		MoveAndSlide();
+	}
 
+
+	private SpringArm3D spring_arm;
+	private Vector3 get_move_input(double delta)
+	{
+		Vector3 velocity = Velocity;
+		float vy = Velocity.Y;
+		velocity.Y = 0;
+		Vector2 input = Input.GetVector("left", "right", "forward", "backward");
+		Vector3 dir = new Vector3(-input.Y, 0, input.X).Rotated(Vector3.Up, spring_arm.Rotation.Y);
+
+		velocity = velocity.Lerp(dir * Speed, Acceleration * (float)delta);
+		handle_animation(velocity);
+
+		velocity.Y = vy;
+		return velocity;
+	}
+
+	private bool can_jump = false;
+	private Vector3 handle_jump(Vector3 velocity, double delta)
+	{
 		if (!IsOnFloor())
 			velocity.Y -= gravity * (float)delta;
 
@@ -31,48 +57,29 @@ public partial class player : CharacterBody3D
 			velocity.Y = JumpVelocity;
 			can_jump = true;
 		}
-
-
 		if (Input.IsActionJustPressed("jump") && can_jump && !IsOnFloor())
 		{
 			can_jump = false;
 			velocity.Y = JumpVelocity;
 		}
-
-		Vector2 inputDir = Input.GetVector("left", "right", "forward", "backward");
-		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-
-		if (direction != Vector3.Zero)
-		{
-			velocity.X = direction.X * Speed;
-			velocity.Z = direction.Z * Speed;
-			GetNode<Node3D>("Rig").LookAt(Position + direction, Vector3.Up);
-		}
-		else
-		{
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
-			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
-		}
-
-		handle_animation(direction, delta);
-		Velocity = velocity;
-		MoveAndSlide();
+		return velocity;
 	}
 
 
+
+	private Node3D Model;
 	private AnimationTree animations;
 	private AnimationNodeStateMachinePlayback stateMachine;
-	private bool jumping = true;
-	private bool last_floor = true;
-	private void handle_animation(Vector3 direction, double delta)
+	private void handle_animation(Vector3 velocity)
 	{
-		Vector3 velocity = Velocity;
-		velocity = velocity.Lerp(direction * Speed, (float)delta);
-		var vl = velocity * Transform.Basis;
-		animations.Set("parameters/IWR/blend_position", new Vector2(vl.X, -vl.Z) / Speed);
+		var vl = velocity * Model.Transform.Basis;
+		animations.Set("parameters/IWR/blend_position", new Vector2(vl.Z, vl.X) / Speed);
 		handle_jump_animation();
 	}
 
+
+	private bool jumping = true;
+	private bool last_floor = true;
 	private void handle_jump_animation()
 	{
 		if (IsOnFloor() && Input.IsActionJustPressed("jump"))
