@@ -20,6 +20,9 @@ public partial class player : CharacterBody3D
 	{
 		Vector3 velocity = Velocity;
 
+		if (GlobalPosition.Y < -10)
+			GlobalPosition = new Vector3(0, 0, 0);
+
 		if (!IsOnFloor())
 			velocity.Y -= gravity * (float)delta;
 
