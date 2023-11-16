@@ -36,7 +36,6 @@ anchor_bottom = 1.0
 offset_right = -0.00012207
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("2_we7w3")
 
 [node name="TextureRect" type="TextureRect" parent="HUD"]
 layout_mode = 2
@@ -56,6 +55,7 @@ offset_bottom = 120.0
 label_settings = SubResource("LabelSettings_b68tl")
 horizontal_alignment = 1
 vertical_alignment = 1
+script = ExtResource("2_we7w3")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, -1.3903e-08, -2.40807e-08, 2.68585e-08, 0.707107, 0.707107, 7.19671e-09, -0.707107, 0.707107, 0, 11, 0)
