@@ -24,6 +24,7 @@ public partial class player : CharacterBody3D
 
 		if (GlobalPosition.Y < -10)
 			GlobalPosition = new Vector3(0, 0, 0);
+
 		velocity = handle_jump(velocity, delta);
 		Velocity = velocity;
 		MoveAndSlide();
@@ -61,6 +62,8 @@ public partial class player : CharacterBody3D
 		{
 			can_jump = false;
 			velocity.Y = JumpVelocity;
+			stateMachine.Travel("Jump_Start");
+			animations.Set("parameters/conditions/grounded", false);
 		}
 		return velocity;
 	}
