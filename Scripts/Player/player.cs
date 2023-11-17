@@ -97,8 +97,8 @@ public partial class player : CharacterBody3D
 
 	private void HandleAnimation(Vector3 velocity)
 	{
-		var vl = velocity * Model.Transform.Basis;
-		animations.Set("parameters/IWR/blend_position", new Vector2(vl.Z, vl.X) / Speed);
+		var vl = velocity * Transform.Basis;
+		animations.Set("parameters/IWR/blend_position", new Vector2(vl.X, -vl.Z) / Speed);
 		HandleJumpAnimation();
 	}
 
