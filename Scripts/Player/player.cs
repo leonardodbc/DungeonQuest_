@@ -11,8 +11,6 @@ public partial class player : CharacterBody3D
 	public float gravity = 2.5f + ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
 	public float MouseSensitive = 0.0005f;
-
-	private SpringArm3D spring_arm;
 	private Node3D Model;
 	private AnimationTree animations;
 	private AnimationNodeStateMachinePlayback stateMachine;
@@ -27,7 +25,6 @@ public partial class player : CharacterBody3D
 		Model = GetNode<Node3D>("Rig");
 		animations = GetNode<AnimationTree>("AnimationTree");
 		stateMachine = (AnimationNodeStateMachinePlayback)animations.Get("parameters/playback");
-		spring_arm = GetNode<SpringArm3D>("SpringArm3D");
 	}
 
 	public override void _PhysicsProcess(double delta)
