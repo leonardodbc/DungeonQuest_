@@ -79,6 +79,8 @@ public partial class player : CharacterBody3D
 
 		if (@event is InputEventMouseMotion mouseMotion)
 		{
+			Input.MouseMode = Input.MouseModeEnum.Captured;
+
 			_rotationX += mouseMotion.Relative.X * MouseSensitivity;
 
 			Transform3D transform = Transform;
