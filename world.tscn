@@ -67,6 +67,7 @@ environment = SubResource("Environment_gimo0")
 
 [node name="Player" parent="." instance=ExtResource("1_8euem")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
+RotationSpeed = 0.0
 
 [node name="GridMap" type="GridMap" parent="."]
 mesh_library = ExtResource("2_fp1pq")
