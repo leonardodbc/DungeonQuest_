@@ -10,7 +10,7 @@ public partial class player : CharacterBody3D
 	public float gravity = 2.5f + ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
 	public float MouseSensitive = 0.0005f;
-	[Export] private float RotationSpeed = 9.0f;
+	[Export] private float RotationSpeed = 00009f;
 
 	public override void _Ready()
 	{
@@ -33,7 +33,7 @@ public partial class player : CharacterBody3D
 		MoveAndSlide();
 		if (velocity.Length() > 1.0)
 		{
-			RotateObjectLocal(Vector3.Up, spring_arm.RotationDegrees.Y * 0.0010f);
+			RotateObjectLocal(Vector3.Up, spring_arm.RotationDegrees.Y * RotationSpeed);
 			GD.Print(Rotation);
 		}
 
