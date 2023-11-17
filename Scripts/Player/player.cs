@@ -9,6 +9,9 @@ public partial class player : CharacterBody3D
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = 2.5f + ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
+	public float MouseSensitive = 0.0005f;
+	[Export] private float RotationSpeed = 9.0f;
+
 	public override void _Ready()
 	{
 		Model = GetNode<Node3D>("Rig");
@@ -20,35 +23,41 @@ public partial class player : CharacterBody3D
 	{
 		Vector3 velocity = Velocity;
 		velocity.Y += -gravity * (float)delta;
-		velocity = get_move_input(delta);
+		velocity = GetMoveInput(delta);
 
 		if (GlobalPosition.Y < -10)
 			GlobalPosition = new Vector3(0, 0, 0);
 
-		velocity = handle_jump(velocity, delta);
+		velocity = HandleJump(velocity, delta);
 		Velocity = velocity;
 		MoveAndSlide();
+		if (velocity.Length() > 1.0)
+		{
+			RotateObjectLocal(Vector3.Up, spring_arm.RotationDegrees.Y * 0.0010f);
+			GD.Print(Rotation);
+		}
+
 	}
 
 
 	private SpringArm3D spring_arm;
-	private Vector3 get_move_input(double delta)
+	private Vector3 GetMoveInput(double delta)
 	{
 		Vector3 velocity = Velocity;
 		float vy = Velocity.Y;
 		velocity.Y = 0;
 		Vector2 input = Input.GetVector("left", "right", "forward", "backward");
-		Vector3 dir = new Vector3(-input.Y, 0, input.X).Rotated(Vector3.Up, spring_arm.Rotation.Y);
+		Vector3 dir = new Vector3(input.X, 0, input.Y).Rotated(Vector3.Up, Rotation.Y);
 
 		velocity = velocity.Lerp(dir * Speed, Acceleration * (float)delta);
-		handle_animation(velocity);
+		HandleAnimation(velocity);
 
 		velocity.Y = vy;
 		return velocity;
 	}
 
 	private bool can_jump = false;
-	private Vector3 handle_jump(Vector3 velocity, double delta)
+	private Vector3 HandleJump(Vector3 velocity, double delta)
 	{
 		if (!IsOnFloor())
 			velocity.Y -= gravity * (float)delta;
@@ -67,23 +76,45 @@ public partial class player : CharacterBody3D
 		}
 		return velocity;
 	}
+	private float _rotationX = 0f;
+	private float _rotationY = 0f;
 
+	public override void _Input(InputEvent @event)
+	{
+		if (@event is InputEventMouseMotion mouseMotion)
+		{
+			// modify accumulated mouse rotation
+			_rotationX += mouseMotion.Relative.X * MouseSensitive;
+			_rotationY += mouseMotion.Relative.Y * MouseSensitive;
 
+			// reset rotation
+			Transform3D transform = spring_arm.Transform;
+			transform.Basis = Basis.Identity;
+			spring_arm.Transform = transform;
+
+			var rotation = spring_arm.Rotation;
+			rotation.Y -= mouseMotion.Relative.X * MouseSensitive;
+			spring_arm.Rotation = rotation;
+
+			spring_arm.Rotate(Vector3.Up, _rotationX * -1); // first rotate about Y
+			spring_arm.Rotate(Vector3.Right, _rotationY * -1); // then rotate about X
+		}
+	}
 
 	private Node3D Model;
 	private AnimationTree animations;
 	private AnimationNodeStateMachinePlayback stateMachine;
-	private void handle_animation(Vector3 velocity)
+	private void HandleAnimation(Vector3 velocity)
 	{
 		var vl = velocity * Model.Transform.Basis;
 		animations.Set("parameters/IWR/blend_position", new Vector2(vl.Z, vl.X) / Speed);
-		handle_jump_animation();
+		HandleJumpAnimation();
 	}
 
 
 	private bool jumping = true;
 	private bool last_floor = true;
-	private void handle_jump_animation()
+	private void HandleJumpAnimation()
 	{
 		if (IsOnFloor() && Input.IsActionJustPressed("jump"))
 		{
