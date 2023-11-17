@@ -29,12 +29,6 @@ public partial class player : CharacterBody3D
 		velocity = HandleJump(velocity, delta);
 		Velocity = velocity;
 		MoveAndSlide();
-		if (velocity.Length() > 1.0)
-		{
-			Rotate(Vector3.Up, spring_arm.RotationDegrees.Y * 0.0010f);
-			GD.Print(Rotation);
-		}
-
 	}
 
 
@@ -75,27 +69,26 @@ public partial class player : CharacterBody3D
 		return velocity;
 	}
 	private float _rotationX = 0f;
-	private float _rotationY = 0f;
+
 
 	public override void _Input(InputEvent @event)
 	{
+		if (!Input.IsMouseButtonPressed(MouseButton.Right)) return;
 		if (@event is InputEventMouseMotion mouseMotion)
 		{
 			// modify accumulated mouse rotation
 			_rotationX += mouseMotion.Relative.X * MouseSensitive;
-			_rotationY += mouseMotion.Relative.Y * MouseSensitive;
 
 			// reset rotation
-			Transform3D transform = spring_arm.Transform;
+			Transform3D transform = Transform;
 			transform.Basis = Basis.Identity;
-			spring_arm.Transform = transform;
+			Transform = transform;
 
-			var rotation = spring_arm.Rotation;
+			var rotation = Rotation;
 			rotation.Y -= mouseMotion.Relative.X * MouseSensitive;
-			spring_arm.Rotation = rotation;
+			Rotation = rotation;
 
-			spring_arm.Rotate(Vector3.Up, _rotationX * -1); // first rotate about Y
-			spring_arm.Rotate(Vector3.Right, _rotationY * -1); // then rotate about X
+			Rotate(Vector3.Up, _rotationX * -1);
 		}
 	}
 
