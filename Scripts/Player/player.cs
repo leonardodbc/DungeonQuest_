@@ -10,19 +10,17 @@ public partial class player : CharacterBody3D
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = 2.5f + ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 
-	public float MouseSensitive = 0.0005f;
-	private Node3D Model;
+	[Export] public float MouseSensitivity = 0.0008f;
 	private AnimationTree animations;
 	private AnimationNodeStateMachinePlayback stateMachine;
 
 	private float _rotationX = 0f;
-	private bool can_jump = false;
+	private bool canJump = false;
 	private bool jumping = true;
-	private bool last_floor = true;
+	private bool lastFloor = true;
 
 	public override void _Ready()
 	{
-		Model = GetNode<Node3D>("Rig");
 		animations = GetNode<AnimationTree>("AnimationTree");
 		stateMachine = (AnimationNodeStateMachinePlayback)animations.Get("parameters/playback");
 	}
@@ -61,12 +59,12 @@ public partial class player : CharacterBody3D
 		if (Input.IsActionJustPressed("jump") && IsOnFloor())
 		{
 			velocity.Y = JumpVelocity;
-			can_jump = true;
+			canJump = true;
 		}
 
-		if (Input.IsActionJustPressed("jump") && can_jump && !IsOnFloor())
+		if (Input.IsActionJustPressed("jump") && canJump && !IsOnFloor())
 		{
-			can_jump = false;
+			canJump = false;
 			velocity.Y = JumpVelocity;
 			stateMachine.Travel("Jump_Start");
 			animations.Set("parameters/conditions/grounded", false);
@@ -81,14 +79,14 @@ public partial class player : CharacterBody3D
 
 		if (@event is InputEventMouseMotion mouseMotion)
 		{
-			_rotationX += mouseMotion.Relative.X * MouseSensitive;
+			_rotationX += mouseMotion.Relative.X * MouseSensitivity;
 
 			Transform3D transform = Transform;
 			transform.Basis = Basis.Identity;
 			Transform = transform;
 
 			var rotation = Rotation;
-			rotation.Y -= mouseMotion.Relative.X * MouseSensitive;
+			rotation.Y -= mouseMotion.Relative.X * MouseSensitivity;
 			Rotation = rotation;
 
 			Rotate(Vector3.Up, _rotationX * -1);
@@ -112,13 +110,13 @@ public partial class player : CharacterBody3D
 
 		animations.Set("parameters/conditions/jumping", jumping);
 
-		if (IsOnFloor() && !last_floor)
+		if (IsOnFloor() && !lastFloor)
 		{
 			jumping = false;
 			animations.Set("parameters/conditions/grounded", true);
 		}
 
-		last_floor = IsOnFloor();
+		lastFloor = IsOnFloor();
 
 		if (!IsOnFloor() && !jumping)
 		{
